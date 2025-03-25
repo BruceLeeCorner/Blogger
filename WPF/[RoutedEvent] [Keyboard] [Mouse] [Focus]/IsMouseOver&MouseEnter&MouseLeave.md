@@ -1,0 +1,17 @@
+由于WPF中的内容控件和布局控件内可以嵌套其他控件，所以在逻辑树可以无限嵌套。
+
+```xml
+<Window>
+	<StackPanel>
+		<Button Margin="30"/>
+	</StackPanel>
+</Window>
+```
+
+鼠标在Button上时，Window、StackPanel、Button的IsMouseOver都是True.
+鼠标在Button外面的Margin上时，Window、StackPanel的IsMouseOver都是True，Button是false.
+鼠标进入Window，Window的IsMouseOver变成true，同时触发MouseEnter事件，进而鼠标再进入StackPanel，StackPanel的IsMouseOver变成true,同时再次触发MouseEnter事件。鼠标退出时，过程相反。
+MouseEnter和MouseLeave是直接路由事件。
+MouseEnter、MouseLeave和IsMouseOver是同步的,只要IsMouseOver被设置成true就会触发MouseEnter，false时会触发MouseLeave；同样的，只要执行了MouseEnter，其IsMouseOver会被设置成true，只要执行了MouseLeave，其IsMouseOver也会被设置成false。
+有时候鼠标放置到某些控件上，如StackPanel，其IsMouseOver并不会变成true，原因是Background不能是NULL，可以设置成Transparent。
+如果作为外部控件的StackPanel的Background是NULL，刚进入StackPanel时，并不会触发MouseEnter事件，IsMouseOver也不会是True，但是如果其Content或Children有控件，进入内部控件时，会先触发内部控件的MouseEnter事件，紧接着会触发外部控件的MouseEnter.
